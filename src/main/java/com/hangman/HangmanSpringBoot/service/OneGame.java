@@ -1,7 +1,6 @@
-package com.hangman.HangmanSpringBoot;
+package com.hangman.HangmanSpringBoot.service;
 
 import org.springframework.stereotype.Service;
-
 import java.util.Scanner;
 
 /**
@@ -16,7 +15,7 @@ public class OneGame {
     private char inputLetter;
     private String lexicon;
     private char[] guessedLexicon;
-    private int noOfGuesses = 0;
+    private int noOfGuesses;
     private static final int MAX_GUESSES = 6;
 
     private String hangmanDrawing = "" +
@@ -36,7 +35,7 @@ public class OneGame {
             "    0\n" +
             "    0" +
             "";
-    private static final int[][] changeSequence ={{48,65,67,84},//head
+    private static final int[][] CHANGE_SEQUENCE ={{48,65,67,84},//head
             {102,120,138,156},// body
             {101,118,135},//arm
             {103,122,141},//arm
@@ -83,15 +82,15 @@ public class OneGame {
         }
     }
 
-    public boolean checkIfLetterExists(){
+    private boolean checkIfLetterExists(){
         if (!(""+this.inputLetter).equals("\u0000")) return this.lexicon.contains(""+this.inputLetter);
         else return true;
     }
 
     private void updateHangman() {
         char[] hang = hangmanDrawing.toCharArray();
-        for (int i=0; i<this.changeSequence[this.noOfGuesses-1].length;i++) {
-            hang[this.changeSequence[this.noOfGuesses-1][i]] = '0';
+        for (int i = 0; i<this.CHANGE_SEQUENCE[this.noOfGuesses-1].length; i++) {
+            hang[this.CHANGE_SEQUENCE[this.noOfGuesses-1][i]] = '0';
         }
         this.hangmanDrawing = "";
         for (int i = 0; i<hang.length; i++) {
@@ -112,19 +111,20 @@ public class OneGame {
         Scanner scanner = new Scanner(System.in);
 
         //  prompt for the user's name
-        System.out.println("Give me a letter: ");
+        System.out.println("\nGive me a letter: ");
 
         // get their input as a String
         String letter = scanner.nextLine();
 
-        if ((letter.length() == 1) || (!letter.isEmpty()))
+        if (letter.toUpperCase().equals("STOP")) {
+            endGame();
+        }
+
+        if ((letter.length() == 1) && (!letter.isEmpty()))
             if (!Character.isLetter(letter.charAt(0)))
             {
                 System.out.println("Give me only a letter, one letter pls ");
                 askForInput();
-            }
-            else if (letter.toUpperCase().equals("STOP")) {
-                    endGame();
             }
             else
                 this.inputLetter = letter.toUpperCase().charAt(0);
@@ -155,20 +155,29 @@ public class OneGame {
         System.out.println(this.hangmanDrawing);
     }
 
-    public void displayLetters(){
-        System.out.println(this.guessedLexicon);
+    private void displayLetters(){
+        for (char c: this.guessedLexicon) {
+            System.out.print(c+" ");
+        }
     }
 
     //----------------end game-------------//
 
     public void winGame() {
         System.out.println("" +
-                " __      __.___ _______   \n" +
-                "/  \\    /  \\   |\\      \\  \n" +
-                "\\   \\/\\/   /   |/   |   \\ \n" +
-                " \\        /|   /    |    \\\n" +
-                "  \\__/\\  / |___\\____|__  /\n" +
-                "       \\/              \\/ \n" +
+                "\n" +
+                " ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄        ▄ \n" +
+                "▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░▌      ▐░▌\n" +
+                "▐░▌       ▐░▌ ▀▀▀▀█░█▀▀▀▀ ▐░▌░▌     ▐░▌\n" +
+                "▐░▌       ▐░▌     ▐░▌     ▐░▌▐░▌    ▐░▌\n" +
+                "▐░▌   ▄   ▐░▌     ▐░▌     ▐░▌ ▐░▌   ▐░▌\n" +
+                "▐░▌  ▐░▌  ▐░▌     ▐░▌     ▐░▌  ▐░▌  ▐░▌\n" +
+                "▐░▌ ▐░▌░▌ ▐░▌     ▐░▌     ▐░▌   ▐░▌ ▐░▌\n" +
+                "▐░▌▐░▌ ▐░▌▐░▌     ▐░▌     ▐░▌    ▐░▌▐░▌\n" +
+                "▐░▌░▌   ▐░▐░▌ ▄▄▄▄█░█▄▄▄▄ ▐░▌     ▐░▐░▌\n" +
+                "▐░░▌     ▐░░▌▐░░░░░░░░░░░▌▐░▌      ▐░░▌\n" +
+                " ▀▀       ▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀        ▀▀ \n" +
+                "                                       \n" +
                 "");
     }
 
@@ -177,7 +186,7 @@ public class OneGame {
         System.exit(0);
     }
 
-    public void outOfMoves() {
+    private void outOfMoves() {
         System.out.println("You guessed more than 6 letters!");
     }
 

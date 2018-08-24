@@ -1,4 +1,4 @@
-package com.hangman.HangmanSpringBoot;
+package com.hangman.HangmanSpringBoot.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class HangmanLexicon {
 
-    private static final List<String> lexicon = new ArrayList<String>(Arrays.asList("HANGMAN","SECURITY","OVERLOADING"));
+    private static final List<String> lexicon = new ArrayList<>(Arrays.asList("HANGMAN","SECURITY","OVERLOADING"));
 
     public String extractAWord() {
 
