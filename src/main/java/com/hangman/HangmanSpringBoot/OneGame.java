@@ -15,7 +15,7 @@ public class OneGame {
 
     private char inputLetter;
     private String lexicon;
-    private char[] guessedLexicon = new char[50];
+    private char[] guessedLexicon;
     private int noOfGuesses = 0;
     private static final int MAX_GUESSES = 6;
 
@@ -37,11 +37,11 @@ public class OneGame {
             "    0" +
             "";
     private static final int[][] changeSequence ={{48,65,67,84},//head
-            {102,120,138,155},// body
+            {102,120,138,156},// body
             {101,118,135},//arm
             {103,122,141},//arm
-            {172,189,96},//leg
-            {174,193,212}//leg
+            {173,190,207},//leg
+            {175,194,213}//leg
     };
 
 
@@ -50,6 +50,7 @@ public class OneGame {
     public void startGame(String lexicon){
         this.lexicon = lexicon;
         this.noOfGuesses = 0;
+        this.guessedLexicon = new char[lexicon.length()];
         for (int i=0; i<this.lexicon.length();i++)
             this.guessedLexicon[i] = '_';
         displayStart();
@@ -66,9 +67,14 @@ public class OneGame {
                 displayLetters();
 
             } else {
+                this.noOfGuesses ++;
                 updateHangman();
                 displayHangman();
                 displayLetters();
+                if (this.noOfGuesses == MAX_GUESSES) {
+                    outOfMoves();
+                    endGame();
+                }
             }
         }
         else {
@@ -78,13 +84,14 @@ public class OneGame {
     }
 
     public boolean checkIfLetterExists(){
-        return this.lexicon.contains(""+this.inputLetter);
+        if (!(""+this.inputLetter).equals("\u0000")) return this.lexicon.contains(""+this.inputLetter);
+        else return true;
     }
 
     private void updateHangman() {
         char[] hang = hangmanDrawing.toCharArray();
-        for (int i=0; i<this.changeSequence[this.noOfGuesses+1].length;i++) {
-            hang[this.changeSequence[this.noOfGuesses + 1][i]] = '0';
+        for (int i=0; i<this.changeSequence[this.noOfGuesses-1].length;i++) {
+            hang[this.changeSequence[this.noOfGuesses-1][i]] = '0';
         }
         this.hangmanDrawing = "";
         for (int i = 0; i<hang.length; i++) {
@@ -105,28 +112,27 @@ public class OneGame {
         Scanner scanner = new Scanner(System.in);
 
         //  prompt for the user's name
-        System.out.print("Give me a letter: ");
+        System.out.println("Give me a letter: ");
 
         // get their input as a String
-        String letter = scanner.next();
+        String letter = scanner.nextLine();
 
         if ((letter.length() == 1) || (!letter.isEmpty()))
             if (!Character.isLetter(letter.charAt(0)))
             {
-                System.out.print("Give me only a letter, one letter pls ");
+                System.out.println("Give me only a letter, one letter pls ");
                 askForInput();
             }
-            else {
-                if (letter.toUpperCase().equals("STOP")) {
+            else if (letter.toUpperCase().equals("STOP")) {
                     endGame();
-                }
-                else {
-                    System.out.print("Give me only a letter, one letter pls ");
-                    askForInput();
-                }
             }
+            else
+                this.inputLetter = letter.toUpperCase().charAt(0);
+        else {
+            System.out.println("Give me only a letter, one letter pls ");
+            askForInput();
+        }
 
-        this.inputLetter = letter.toUpperCase().charAt(0);
 
     }
 
@@ -155,6 +161,17 @@ public class OneGame {
 
     //----------------end game-------------//
 
+    public void winGame() {
+        System.out.println("" +
+                " __      __.___ _______   \n" +
+                "/  \\    /  \\   |\\      \\  \n" +
+                "\\   \\/\\/   /   |/   |   \\ \n" +
+                " \\        /|   /    |    \\\n" +
+                "  \\__/\\  / |___\\____|__  /\n" +
+                "       \\/              \\/ \n" +
+                "");
+    }
+
     public void endGame() {
         System.out.println("Thanks for playing!");
         System.exit(0);
@@ -166,8 +183,9 @@ public class OneGame {
 
     public boolean isDone() {
         if (this.noOfGuesses > MAX_GUESSES) return false;
+        boolean notGuessed = true;
         for (int i=0; i<this.guessedLexicon.length;i++)
-            if (this.guessedLexicon[i] == '_') return false;
-        return true;
+            if (this.guessedLexicon[i] == '_') notGuessed = false;
+        return notGuessed;
     }
 }
