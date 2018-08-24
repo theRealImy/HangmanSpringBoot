@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HangmanController {
 
     @Autowired
-    public OneGame game;
+    private OneGame game;
+
     private HangmanLexicon hl;
 
 
