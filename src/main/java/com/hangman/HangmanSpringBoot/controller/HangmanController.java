@@ -3,11 +3,8 @@ package com.hangman.HangmanSpringBoot.controller;
 import com.hangman.HangmanSpringBoot.model.HangmanLexicon;
 import com.hangman.HangmanSpringBoot.service.OneGame;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * @author turdeant - 22.08.18
